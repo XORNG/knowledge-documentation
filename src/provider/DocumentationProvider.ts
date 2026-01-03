@@ -2,11 +2,9 @@ import {
   BaseKnowledgeProvider,
   type KnowledgeQuery,
   type KnowledgeResult,
-  type SubAgentMetadata,
-  type SubAgentConfig,
   type KnowledgeProviderConfig,
 } from '@xorng/template-knowledge';
-import { createToolHandler } from '@xorng/template-base';
+import { createToolHandler, type SubAgentMetadata, type SubAgentConfig } from '@xorng/template-base';
 import { z } from 'zod';
 import type { ProviderConfig, DocumentationQuery, SourceConfig } from '../types/index.js';
 import { LocalDocumentationSource } from '../sources/LocalDocumentationSource.js';
@@ -23,7 +21,7 @@ import { DocumentationChunker } from '../utils/chunker.js';
  * - Returns relevant code examples
  */
 export class DocumentationProvider extends BaseKnowledgeProvider {
-  private providerConfig: ProviderConfig;
+  private docConfig: ProviderConfig;
   private chunker: DocumentationChunker;
 
   constructor(
@@ -48,11 +46,11 @@ export class DocumentationProvider extends BaseKnowledgeProvider {
 
     super(fullMetadata, subAgentConfig, knowledgeConfig);
     
-    this.providerConfig = config;
+    this.docConfig = config;
     this.chunker = new DocumentationChunker(config.chunkSize, config.chunkOverlap);
 
     // Register sources
-    this.initializeSources(config.sources);
+    this.setupSources(config.sources);
 
     // Register documentation-specific tools
     this.registerDocumentationTools();
@@ -61,7 +59,7 @@ export class DocumentationProvider extends BaseKnowledgeProvider {
   /**
    * Initialize sources from configuration
    */
-  private initializeSources(sources: SourceConfig[]): void {
+  private setupSources(sources: SourceConfig[]): void {
     for (const sourceConfig of sources) {
       let source;
       
@@ -99,7 +97,7 @@ export class DocumentationProvider extends BaseKnowledgeProvider {
     const result = await this.search({
       query: query.query,
       filters,
-      limit: query.limit || this.providerConfig.maxResults,
+      limit: query.limit || this.docConfig.maxResults,
     });
 
     // Additional filtering by category/framework

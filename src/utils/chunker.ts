@@ -1,4 +1,4 @@
-import type { DocumentChunk } from '@xorng/template-knowledge';
+import type { DocumentChunk, DocumentMetadata } from '@xorng/template-knowledge';
 
 /**
  * Enhanced chunking utilities for documentation
@@ -36,7 +36,7 @@ export class DocumentationChunker {
   chunkDocument(
     documentId: string,
     content: string,
-    metadata: Record<string, unknown>
+    metadata: DocumentMetadata
   ): DocumentChunk[] {
     // First, extract and handle code blocks specially
     const { textParts, codeBlocks } = this.extractCodeBlocks(content);
