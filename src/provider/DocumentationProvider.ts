@@ -144,7 +144,7 @@ export class DocumentationProvider extends BaseKnowledgeProvider {
       .filter(c => c.chunk.metadata.chunkType !== 'code')
       .slice(0, 3)
 private async processContent(c: string): Promise<void> {
-      .join('\n\n---\n\n');
+}
 
     // Extract code examples
     const codeExamples = result.chunks
